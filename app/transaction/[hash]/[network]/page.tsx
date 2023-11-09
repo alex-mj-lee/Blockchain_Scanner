@@ -37,9 +37,13 @@ const Transaction = async ({
       <div className="px-2 bg-gray-300 w-full h-screen flex flex-col gap-4 items-center">
         <h2 className="text-xl font-bold mt-4">Transaction Info</h2>
         <div className="text-gray-700 w-5/6 lg:w-2/5 h-2/4 border-2 rounded-md p-3 flex flex-col gap-4 pl-4">
-          <p>From: {txData?.from_address}</p>
-          <p>To: {txData?.to_address as ReactNode}</p>
-          <p>Amount:{txData?.value ? Utils.formatEther(txData?.value) : ""}</p>
+          <p className="overflow-y-auto">From: {txData?.from_address}</p>
+          <p className="overflow-y-auto">
+            To: {txData?.to_address as ReactNode}
+          </p>
+          <p className="overflow-y-auto">
+            Amount:{txData?.value ? Utils.formatEther(txData?.value) : ""}
+          </p>
           <p>Date: {txData ? formatDate(txData?.block_timestamp) : ""}</p>
           <p>
             Confirmation:{" "}
