@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { AssetTransfersWithMetadataParams, Utils } from "alchemy-sdk";
+import { Utils } from "alchemy-sdk";
 import Link from "next/link";
 import { getBalance, getAllTransactions } from "../hooks/useAlchemy";
 
@@ -8,10 +8,14 @@ export const TransactionSeach = () => {
   const [serachInput, setSerachInput] = useState(
     "0x1256497A1b0729E167BC52E2b08EE23a888184C9"
   );
-  const [results, setResults] = useState([]);
+
+  const [results, setResults] = useState<
+    Array<{ metadata: { blockTimestamp: string } }>
+  >([]);
   const [addressBalance, setAddressBalance] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [currentNetwork, setCurrentNetwork] = useState("ETH");
+  const [sortOrder, setSortOrder] = useState("asc");
   const itemsPerPage = 25;
 
   const handleInputChange = (e: any) => {
@@ -59,6 +63,25 @@ export const TransactionSeach = () => {
   const shortenAddress = (address: string) =>
     `${address.slice(0, 6)}...${address.slice(address.length - 6)}`;
 
+  const handleSortByTime = () => {
+    const sortedResults = [
+      ...(results as Array<{ metadata: { blockTimestamp: string } }>),
+    ];
+    sortedResults.sort((a, b) => {
+      const timeA = new Date(a.metadata.blockTimestamp).getTime();
+      const timeB = new Date(b.metadata.blockTimestamp).getTime();
+
+      if (sortOrder === "asc") {
+        return timeA - timeB;
+      } else {
+        return timeB - timeA;
+      }
+    });
+
+    setResults(sortedResults);
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
+
   return (
     <div className="flex flex-col gap-4 items-center justify-center mt-10 text-gray-600">
       <h1 className="w-[75%] lg:w-1/2">
@@ -92,7 +115,10 @@ export const TransactionSeach = () => {
           <table className="w-full">
             <thead>
               <tr>
-                <th className="text-left">Time</th>
+                <th className="text-left" onClick={handleSortByTime}>
+                  Time {sortOrder === "asc" ? "▲" : "▼"}
+                </th>
+
                 <th className="text-left">Amount</th>
                 <th className="text-left">Link</th>
               </tr>

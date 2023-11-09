@@ -40,7 +40,6 @@ export async function getAllTransactions(address: string, netWork: string) {
         AssetTransfersCategory.SPECIALNFT,
       ],
     });
-    console.log(res.transfers);
     return res.transfers;
   } catch (error) {
     console.error("Error fetching All Transaction:", error);
